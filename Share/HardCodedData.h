@@ -20,8 +20,20 @@
 #define SERVER_PORT 2345
 #define NUM_OF_WORKER_THREADS 2
 #define NUM_OF_PLAYRES 2
-#define MA_NAME_SIZE 20
+#define MAX_NAME_SIZE 20
+#define MAX_MESSEGE_SIZE 20
 #define THREAD_TIMEOUT_IN_MS 80
+#define MAX_LENGTH_OF_ROW 200
+#define MAX_SIZE_OF_PORT 5
+
+enum E_Server_messege { Servr_Approved, Servr_Denied, Server_main_menu, Game_started,Turn_swich,Game_Ended, Server_No_Opponents,Gam_Veiw,Server_Oponent_Quit };
+enum E_Client_messege { Client_Requset, Client_Verses,Client_Player_Move,Clienrt_Disconnected };
 
 
+// creat an array forl all comands
+typedef struct
+{
+	char messeg[MAX_MESSEGE_SIZE];
+
+} messeges;
 #endif

@@ -143,11 +143,17 @@
   <ItemGroup>
     <ClCompile Include="..\Share\create_and_handle_processes.c" />
     <ClCompile Include="..\Share\file_IO.c" />
+    <ClCompile Include="..\Share\SocketSendRecvTools.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="server_funcs.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Share\create_and_handle_processes.h" />
+    <ClInclude Include="..\Share\file_IO.h" />
     <ClInclude Include="..\Share\HardCodedData.h" />
+    <ClInclude Include="..\Share\SocketExampleShared.h" />
+    <ClInclude Include="..\Share\SocketSendRecvTools.h" />
+    <ClInclude Include="server_funcs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

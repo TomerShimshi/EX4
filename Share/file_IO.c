@@ -239,6 +239,7 @@ int num_of_rows_in_a_file(char* pathToFile)
 /// <param name="index_of_wanted_line"></index of the row to parse>
 /// <param name="arr_to_hold_parsed_values"></pointer to the array that will hold the parsed variables>
 /// <param name="arr_size"></size of that array, or the number of parsed values in a row.>
+/*
 void parse_row_to_array_of_ints(char* pathToFile, int index_of_wanted_line, int* arr_to_hold_parsed_values, int arr_size)
 {
 	int file_offset = 0;
@@ -278,7 +279,7 @@ void parse_row_to_array_of_ints(char* pathToFile, int index_of_wanted_line, int*
 	free(line_buffer);
 }
 
-
+*/
 
 /// <summary>
 /// 

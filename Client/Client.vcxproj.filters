@@ -30,6 +30,12 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Share\SocketSendRecvTools.c">
+      <Filter>Shared Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="client_funcs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Share\create_and_handle_processes.h">
@@ -37,6 +43,18 @@
     </ClInclude>
     <ClInclude Include="..\Share\file_IO.h">
       <Filter>Shared Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Share\SocketExampleShared.h">
+      <Filter>Shared Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Share\SocketSendRecvTools.h">
+      <Filter>Shared Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Share\HardCodedData.h">
+      <Filter>Shared Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="client_funcs.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

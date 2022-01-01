@@ -24,6 +24,7 @@ Project: Ex4
 #include <math.h>
 #include <stdbool.h>
 #include "HardCodedData.h"
+#include "server_funcs.h"
 
 
 // #######gobal vars#######
@@ -32,6 +33,8 @@ SOCKET ThreadInputs[NUM_OF_WORKER_THREADS]; // saves the socket o each thread
 int* current_step; // saves the current step in order to check if a boom is nescry
 HANDLE log_file_mutex; // a lock for the log file
 HANDLE shared_memory_mutex; // this mutex will be used to check the current step num
+Player Players[NUM_OF_PLAYRES];// saves the shered data about the players
+
 
 
 
@@ -39,11 +42,11 @@ int main(int argc, char* argv[]) {
 
 	SOCKET* MainSocket = malloc(sizeof(SOCKET));//INVALID_SOCKET;
 	unsigned long* Address = malloc(sizeof(unsigned long));
-	SOCKADDR_IN* service = malloc(sizeof(SOCKADDR_IN));
+	SOCKADDR_IN service;// = malloc(sizeof(SOCKADDR_IN));
 	current_step = malloc(sizeof(int));
 	int port_num = atoi(argv[1]); // from the imstruction we get the port num in the commaned prompet
-
-
+	int Ind;
+	initialize_play_array();
 
 
 	shared_memory_mutex = CreateMutex(
@@ -57,7 +60,7 @@ int main(int argc, char* argv[]) {
 		NULL);  /* un-named */
 	if (MainSocket == NULL || Address == NULL || current_step == NULL || log_file_mutex == NULL || shared_memory_mutex == NULL)
 	{
-		printf("Memory allocation failed in main!");
+		printf("Memory allocation failed in server main!");
 		goto Main_Cleanup;
 	}
 
@@ -103,17 +106,18 @@ int main(int argc, char* argv[]) {
 		goto Main_Cleanup;
 	}
 
-	service->sin_family = AF_INET;
-	service->sin_addr.s_addr = Address;
-	service->sin_port = htons(SERVER_PORT); //The htons function converts a u_short from host to TCP/IP network byte order 
+	service.sin_family = AF_INET;
+	service.sin_addr.s_addr = *Address;
+	service.sin_port = htons(port_num); //The htons function converts a u_short from host to TCP/IP network byte order 
 									   //( which is big-endian ).
 
 	// Call the bind function, passing the created socket and the sockaddr_in structure as parameters. 
 	// Check for general errors.
-	return_val = bind(MainSocket, (SOCKADDR*)&service, sizeof(service));
+	return_val = bind(MainSocket, (SOCKADDR*) &service, sizeof(service));
 	if (return_val == SOCKET_ERROR)
 	{
-		printf("bind( ) failed with error %ld. Ending program\n", WSAGetLastError());
+		int error = WSAGetLastError();
+		printf("bind( ) failed with error %ld. Ending program\n", error);
 		goto Main_Cleanup;
 	}
 
@@ -131,7 +135,41 @@ int main(int argc, char* argv[]) {
 		ThreadHandles[Ind] = NULL;
 
 	printf("Waiting for a client to connect...\n");
+	while (TRUE) // the server works forever and waits for clients to connect 
+	{
 
+		SOCKET AcceptSocket = accept(MainSocket, NULL, NULL);
+		if (AcceptSocket == INVALID_SOCKET)
+		{
+			printf("Accepting connection with client failed, error %ld\n", WSAGetLastError());
+			goto Main_Cleanup;
+		}
+
+		printf("Client Connected.\n");
+
+		Ind = FindFirstUnusedThreadSlot();
+
+		if (Ind == NUM_OF_WORKER_THREADS) //no slot is available
+		{
+			printf("No slots available for client, dropping the connection.\n");
+			closesocket(AcceptSocket); //Closing the socket, dropping the connection.
+		}
+		else
+		{
+			ThreadInputs[Ind] = AcceptSocket; // shallow copy: don't close 
+											  // AcceptSocket, instead close 
+											  // ThreadInputs[Ind] when the
+											  // time comes.
+			ThreadHandles[Ind] = CreateThread(
+				NULL,
+				0,
+				(LPTHREAD_START_ROUTINE)ServiceThread,
+				&(ThreadInputs[Ind]),
+				0,
+				NULL
+			);
+		}
+	}
 
 
 	// ### FINISHED THE BOILER PLATE CODE AND THE INIT OF THE SERVER APP#### 
