@@ -1,6 +1,5 @@
 
-#pragma warning(suppress : 4996)
-
+#pragma warning(disable : 4996)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -69,9 +68,9 @@ DWORD ServiceThread(SOCKET* t_socket)
 	 BOOL Done = FALSE;
 	 TransferResult_t SendRes;
 	 TransferResult_t RecvRes;
-	 char* AcceptedStr = NULL;
+	
 	 char* SendStr = malloc(MAX_NAME_SIZE * sizeof(char));
-	 char* parsed_str = calloc(2, sizeof(char) * MAX_NAME_SIZE);
+	 recived_data* parsed_str = malloc( sizeof(recived_data));
 	 int wait_res;
 
 	 
@@ -83,7 +82,8 @@ DWORD ServiceThread(SOCKET* t_socket)
 	 }
 	 while(!Done)
 	 {
-	 RecvRes = ReceiveString(&AcceptedStr, *t_socket);
+		 char* AcceptedStr = NULL;
+		RecvRes = ReceiveString(&AcceptedStr, *t_socket);
 	 if (RecvRes == TRNS_FAILED)
 	 {
 		 printf("Service socket error while reading, closing thread.\n");
@@ -93,12 +93,13 @@ DWORD ServiceThread(SOCKET* t_socket)
 	 printf("The recived STR is %s.\n", AcceptedStr);
 	 
 	 parse_messege(AcceptedStr, parsed_str);
-	 printf("The parsed STR is %s.\n", parsed_str);
-	 if (parsed_str == Client_Requset) // mening we recived the client name
+	 printf("The parsed STR is %d.\n", parsed_str->commaned_num);
+	 printf("The parsed STR is %s.\n", parsed_str->Parames);
+	 if (parsed_str->commaned_num == Client_Requset) // mening we recived the client name
 	 {
-		 parsed_str++;
-		 printf("The parsed user_name is %s.\n", parsed_str);
-		 strcpy_s(clinetname, MAX_NAME_SIZE, parsed_str);// save the client name
+		
+		 printf("The parsed user_name is %s.\n", parsed_str->Parames);
+		 strcpy_s(clinetname, MAX_NAME_SIZE, parsed_str->Parames);// save the client name
 		 
 		 // now we want to update the players DB
 		 
@@ -115,7 +116,8 @@ DWORD ServiceThread(SOCKET* t_socket)
 		 {
 			 if (Players[i].player_name == NULL)
 			 {
-				 strcpy_s(Players[i].player_name, MAX_NAME_SIZE, clinetname);// save the player name in global array
+				 Players[i].player_name = clinetname;
+				 //strcpy_s(Players[i].player_name, MAX_NAME_SIZE, clinetname);// save the player name in global array
 				 break;
 			 }
 		 }
@@ -131,44 +133,21 @@ DWORD ServiceThread(SOCKET* t_socket)
 		 SendRes = SendString(SendStr, *t_socket);
 		 sprintf_s(SendStr, 10, "%d", Server_main_menu);// 
 		 SendRes = SendString(SendStr, *t_socket);
+		 free(AcceptedStr);
 
 
 	 }
 
 	 
 	
-	 //strcpy_s(SendStr, sprintf(Line_To_Write, "%d", *clock); Server_main_menu,1);
-	
 	 
-	 
-	 
-
-	 sprintf_s(&SendStr, "%d", Server_main_menu);
-	 //strcpy_s(SendStr, sprintf(Line_To_Write, "%d", *clock); Server_main_menu,1);
-
-	 SendRes = SendString(SendStr, *t_socket);
 	 }
 	 free(clinetname);
 	 free(SendStr);
 	 free(parsed_str);
  }
 
- /*
- the following function will recvie a str and split it by : into a str array whice it will get as input
- 
- */
- void parse_messege(char input_str[], char* arr)
- {
-	 char* parsed_word = NULL;
-	 for (int i = 0; i < 2; i++)
-	 {
-		 parsed_word = strtok_s(input_str, ":",&parsed_word);
-		 strcpy_s(arr,MAX_NAME_SIZE, parsed_word);
-		 arr++;
-	 }
-		 
-	 
- }
+
 
  /*
  the following function initilize the players array

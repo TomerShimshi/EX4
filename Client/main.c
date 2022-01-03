@@ -36,6 +36,7 @@ SOCKET m_socket;
 char* user_name = NULL;
 
 
+
 int main(int argc, char* argv[]) {
 
 	char* ip = malloc(32 * sizeof(char)); 
@@ -106,6 +107,7 @@ int main(int argc, char* argv[]) {
 		goto Main_Cleanup;
 	}
 	printf("Connected to server on %s :%s\n",ip,port);
+	/*
 	hThread[0] = CreateThread(
 		NULL,
 		0,
@@ -114,17 +116,21 @@ int main(int argc, char* argv[]) {
 		0,
 		NULL
 	);
-	
+	*/
 	hThread[1] = CreateThread(
 		NULL,
 		0,
-		(LPTHREAD_START_ROUTINE)RecvDataThread,
-		NULL,
+		(LPTHREAD_START_ROUTINE)Player_Thread,
+		user_name,
 		0,
 		NULL
 	);
-	
 	WaitForMultipleObjects(2, hThread, TRUE, INFINITE);
+	while (TRUE)
+	{
+
+	}
+	
 	TerminateThread(hThread[0], 0x555);
 	TerminateThread(hThread[1], 0x555);
 	Main_Cleanup:

@@ -85,4 +85,16 @@ TransferResult_t ReceiveString( char** OutputStrPtr, SOCKET sd );
 
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
+typedef struct
+{
+	int commaned_num;
+	char* Parames;
+
+} recived_data;
+
+#define STRINGS_ARE_EQUAL( Str1, Str2 ) ( strcmp( (Str1), (Str2) ) == 0 )
+
+void parse_messege(char input_str[], recived_data* arr);
+void fill_send_messege(char* str_buffer, char* parames, int messege_num, int size_of_parames);
+
 #endif // SOCKET_SEND_RECV_TOOLS_H

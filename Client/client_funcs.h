@@ -4,7 +4,9 @@
 
 DWORD RecvDataThread(void);
 DWORD SendDataThread(LPVOID lpParam);
-void fill_send_messege(char* str_buffer, char* parames, int messege_num);
+DWORD Player_Thread(LPVOID lpParam);
+bool main_menu(char* str_buf);
+void player_move(char* str_buf);
 
 
 

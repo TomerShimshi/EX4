@@ -6,7 +6,7 @@
  by Amnon Drory, based on example code by Johnson M. Hart.
 */
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
-
+#pragma warning(disable : 4996)
 #include "SocketSendRecvTools.h"
 #include "HardCodedData.h"
 #include <stdio.h>
@@ -145,7 +145,36 @@ and feels them with all the server and client messges\commads
 */
 
 
-void fill_our_dictionerys(messeges* server_mesgses, messeges* cliet_messges)
+/*
+the following function will recvie a str and split it by : into a str array whice it will get as input
+
+*/
+void parse_messege(char input_str[], recived_data* arr)
+{
+	char* parsed_word = NULL;
+	parsed_word = strtok(input_str, ":");
+	arr->commaned_num = atoi(parsed_word);
+	parsed_word = strtok(NULL, ":");//, &parsed_word);
+	parsed_word = strtok(parsed_word, "\n");//, &parsed_word);
+	arr->Parames = parsed_word;
+
+}
+
+/*
+* the following method fills out the messege to be trancferd
+* as specified in the HW
+* it recvies as input, a str buffer, the messge type, parames( if no parames nedded send null)
+* and build the send str
+*/
+void fill_send_messege(char* str_buffer, char* parames, int messege_num, int size_of_parames)
 {
 
+	sprintf_s(str_buffer, 3, "%d", messege_num);// set the messege type
+	strcat_s(str_buffer, 3, ":"); // add the : to ithinghish between messge and params
+	if (parames != NULL)
+	{
+		strcat_s(str_buffer, size_of_parames, parames); // add th client name
+	}
+
+	strcat_s(str_buffer, 10, "\n"); // the terminate of the send messege
 }

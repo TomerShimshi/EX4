@@ -25,6 +25,7 @@ Project: Ex4
 #include <stdbool.h>
 #include "HardCodedData.h"
 #include "server_funcs.h"
+#include "SocketSendRecvTools.h"
 
 
 // #######gobal vars#######
@@ -46,7 +47,7 @@ int main(int argc, char* argv[]) {
 	current_step = malloc(sizeof(int));
 	int port_num = atoi(argv[1]); // from the imstruction we get the port num in the commaned prompet
 	int Ind;
-	initialize_play_array();
+	
 
 
 	shared_memory_mutex = CreateMutex(
@@ -63,6 +64,8 @@ int main(int argc, char* argv[]) {
 		printf("Memory allocation failed in server main!");
 		goto Main_Cleanup;
 	}
+
+	initialize_play_array();
 
 	// Initialize Winsock.
 	WSADATA wsaData;
